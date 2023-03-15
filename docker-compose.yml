@@ -1,0 +1,20 @@
+version: "3.9"
+name: wishlist
+
+services:
+
+  api:
+    container_name: api
+    image: clojure
+    ports:
+      - 3000:3000
+    working_dir: /api
+    command: [ "lein", "run" ]
+    volumes:
+      - ./:/api
+      - maven-deps:/root/.m2
+    restart: unless-stopped
+
+volumes:
+  maven-deps:
+    name: maven-deps
