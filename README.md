@@ -1,29 +1,14 @@
 # wishlist-api
 
-FIXME: description
+API for Wishlist app.
 
-## Installation
+## Requirements
 
-Download from http://example.com/FIXME.
+- [podman](https://podman.io/)
+- [podman-compose](https://github.com/containers/podman-compose)
 
-## Usage
+## Run
 
-FIXME: explanation
-
-    $ java -jar wishlist-api-0.1.0-standalone.jar [args]
-
-## Options
-
-FIXME: listing of options this app accepts.
-
-## Examples
-
-...
-
-### Bugs
-
-...
-
-### Any Other Sections
-### That You Think
-### Might be Useful
+```bash
+podman-compose up --build --force-recreate
+```
