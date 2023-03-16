@@ -1,8 +1,8 @@
 (ns wishlist-api.core
   (:require [org.httpkit.server :as server]
-            [compojure.core :refer :all]
+            [compojure.core :refer [GET defroutes]]
             [compojure.route :as route]
-            [ring.middleware.defaults :refer :all])
+            [ring.middleware.defaults :refer [site-defaults wrap-defaults]])
   (:gen-class))
 
 
@@ -22,7 +22,7 @@
 ; Our main entry function
 (defn -main
   "This is our main entry point"
-  [& args]
+  [& _]
   (let [port (Integer/parseInt (or (System/getenv "PORT") "3000"))]
     ; Run the server with Ring.defaults middleware
     (server/run-server (wrap-defaults #'app-routes site-defaults) {:port port})
