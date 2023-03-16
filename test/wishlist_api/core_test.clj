@@ -1,7 +1,9 @@
 (ns wishlist-api.core-test
-  (:require [clojure.test :refer :all]
-            [wishlist-api.core :refer :all]))
+  (:require
+    [clojure.test :refer [deftest is testing]]
+    [wishlist-api.core :refer [hello-world]]))
 
-(deftest a-test
-  (testing "FIXME, I fail."
-    (is (= 0 1))))
+
+(deftest hello-test
+  (testing "should say hello"
+    (is (= ((hello-world nil) :body) "Hello World!"))))
