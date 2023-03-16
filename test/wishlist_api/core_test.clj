@@ -1,5 +1,7 @@
 (ns wishlist-api.core-test
-  (:require [clojure.test :refer [deftest is testing]]))
+  (:require
+    [clojure.test :refer [deftest is testing]]))
+
 
 (deftest a-test
   (testing "FIXME, I fail."

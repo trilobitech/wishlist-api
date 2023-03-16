@@ -1,31 +1,33 @@
 (ns wishlist-api.core
-  (:require [org.httpkit.server :as server]
-            [compojure.core :refer [GET defroutes]]
-            [compojure.route :as route]
-            [ring.middleware.defaults :refer [site-defaults wrap-defaults]])
-  (:gen-class))
+  (:gen-class)
+  (:require
+    [compojure.core :refer [GET defroutes]]
+    [compojure.route :as route]
+    [org.httpkit.server :as server]
+    [ring.middleware.defaults :refer [site-defaults wrap-defaults]]))
 
 
-; Simple Body Page
-(defn hello-world [_] ;(3)
+;; Simple Body Page
+(defn hello-world
+  [_]
   {:status  200
    :headers {"Content-Type" "text/html"}
    :body    "Hello World!"})
 
 
-; Our main routes
+;; Our main routes
 (defroutes app-routes
   (GET "/" [] hello-world)
   (route/not-found "Error, page not found!"))
 
 
-; Our main entry function
+;; Our main entry function
 (defn -main
   "This is our main entry point"
   [& _]
   (let [port (Integer/parseInt (or (System/getenv "PORT") "3000"))]
-    ; Run the server with Ring.defaults middleware
+    ;; Run the server with Ring.defaults middleware
     (server/run-server (wrap-defaults #'app-routes site-defaults) {:port port})
-    ; Run the server without ring defaults
-    ;(server/run-server #'app-routes {:port port})
+    ;; Run the server without ring defaults
+    ;; (server/run-server #'app-routes {:port port})
     (println (str "Running webserver at http://127.0.0.1:" port "/"))))
