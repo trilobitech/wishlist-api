@@ -1,7 +1,7 @@
-(ns wishlist-api.core-test
+(ns wishlist-api.handlers.hello-test
   (:require
     [clojure.test :refer [deftest is testing]]
-    [wishlist-api.core :refer [hello-world]]))
+    [wishlist-api.handlers.hello :refer [hello-world]]))
 
 
 (deftest hello-test
