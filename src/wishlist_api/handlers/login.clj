@@ -15,7 +15,11 @@
   [{:keys [json-params]}]
   {:status 400
    :headers {"Content-Type" "application/json"}
-   :body (json/write-str {:error-message (str "Invalid login method: " (json-params :method))})})
+   :body (json/write-str
+           {:error-message
+            (if (contains? json-params :method)
+              (str "Invalid login method: " (json-params :method))
+              "Login method is required")})})
 
 
 (defn ^:private login-handler
