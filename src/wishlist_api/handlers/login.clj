@@ -1,12 +1,17 @@
 (ns wishlist-api.handlers.login
   (:require
-    [wishlist-api.helpers.utils :refer [call-handler]]))
+    [wishlist-api.helpers.utils :refer [call-handler]]
+    [wishlist-api.helpers.validators :refer [valid-email?]]))
 
 
 (defn ^:private login-with-email-code
-  [_]
-  {:status  204
-   :body    ""})
+  [{:keys [json-params]}]
+  (let [email (:email json-params)]
+    (if (valid-email? email)
+      {:status  204
+       :body    ""}
+      (throw (IllegalArgumentException.
+               (if email (str "Invalid email: " email) "Email is required"))))))
 
 
 (defn ^:private login-handler
