@@ -3,6 +3,7 @@
   (:require
     [io.pedestal.http :as http]
     [io.pedestal.http.route :as route]
+    [wishlist-api.interceptors.error-handler :refer [interceptor->error-handler]]
     [wishlist-api.interceptors.serialize-response :refer [interceptor->response-serializer]]
     [wishlist-api.routes :refer [routes]]))
 
@@ -27,7 +28,8 @@
     (server-config)
     (http/default-interceptors)
     (update ::http/interceptors conj
-            interceptor->response-serializer)
+            interceptor->response-serializer
+            interceptor->error-handler)
     (http/create-server)))
 
 
