@@ -9,30 +9,25 @@
     [wishlist-api.routes :refer [routes]]))
 
 
-(def ^:private http-routes (route/expand-routes (routes)))
-
-
-(def ^:private http-port (Integer/parseInt (or (System/getenv "PORT") "3000")))
-
-
 (defn ^:private server-config
   []
-  {::http/routes http-routes
-   ::http/type   :jetty
-   ::http/host   "0.0.0.0"
-   ::http/port   http-port})
+  (let [http-routes (route/expand-routes (routes))
+        http-port   (Integer/parseInt (or (System/getenv "PORT") "3000"))]
+    {::http/routes http-routes
+     ::http/type   :jetty
+     ::http/host   "0.0.0.0"
+     ::http/port   http-port}))
 
 
 (defn ^:private create-server
   []
-  (->
-    (server-config)
-    (http/default-interceptors)
-    (update ::http/interceptors conj
-            interceptor->parse-request-body
-            interceptor->response-serializer
-            interceptor->error-handler)
-    (http/create-server)))
+  (-> (server-config)
+      (http/default-interceptors)
+      (update ::http/interceptors conj
+              interceptor->parse-request-body
+              interceptor->response-serializer
+              interceptor->error-handler)
+      (http/create-server)))
 
 
 (defn -main

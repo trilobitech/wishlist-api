@@ -1,17 +1,21 @@
 (ns wishlist-api.handlers.login
   (:require
-    [wishlist-api.helpers.utils :refer [call-handler]]
+    [clojure.string :refer [blank?]]
     [wishlist-api.helpers.validators :refer [valid-email?]]))
 
 
+(defn ^:private validate-email
+  [email]
+  (cond
+    (valid-email? email) email
+    (blank? email) (throw (IllegalArgumentException. "Email is required"))
+    :else (throw (IllegalArgumentException. (str "Invalid email: " email)))))
+
+
 (defn ^:private login-with-email-code
-  [{:keys [json-params]}]
-  (let [email (:email json-params)]
-    (if (valid-email? email)
-      {:status  204
-       :body    ""}
-      (throw (IllegalArgumentException.
-               (if email (str "Invalid email: " email) "Email is required"))))))
+  [{:keys [email]}]
+  (validate-email email)
+  {:status 204})
 
 
 (defn ^:private login-handler
@@ -22,13 +26,9 @@
     (throw (IllegalArgumentException. (str "Invalid login method: " method)))))
 
 
-(defn ^:private login-handler-from-request
-  [{:keys [json-params]}]
-  (-> json-params
-      :method
-      login-handler))
-
-
 (defn login
   [context]
-  (call-handler login-handler-from-request context))
+  (let [body-params (:json-params context)
+        method (:method body-params)
+        handler (login-handler method)]
+    (handler body-params)))

@@ -24,4 +24,8 @@
   (testing "given email-code method should return error when invalid email"
     (is (thrown-with-msg?
           IllegalArgumentException #"Invalid email"
-          (login {:json-params {:method "email-code" :email "some-email"}})))))
+          (login {:json-params {:method "email-code" :email "some-email"}}))))
+
+  (testing "given email-code method should return error when valid email"
+    (is (= {:status 204}
+           (login {:json-params {:method "email-code" :email "email@example.co"}})))))
