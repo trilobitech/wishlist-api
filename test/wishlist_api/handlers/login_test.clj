@@ -26,6 +26,7 @@
           IllegalArgumentException #"Invalid email"
           (login {:json-params {:method "email-code" :email "some-email"}}))))
 
-  (testing "given email-code method should return error when valid email"
-    (is (= {:status 204}
-           (login {:json-params {:method "email-code" :email "email@example.co"}})))))
+  (testing "given email-code method should return success when valid email"
+    (let [result (login {:json-params {:method "email-code" :email "email@example.co"}})]
+      (is (= 200 (:status result)))
+      (is (contains? (:body result) :check)))))
