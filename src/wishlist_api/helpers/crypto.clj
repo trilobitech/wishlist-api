@@ -67,4 +67,4 @@
 
 (defn decrypt-json
   ([message] (decrypt-json message default-private-key))
-  ([message private-key] (json/read-str (decrypt message private-key))))
+  ([message private-key] (json/read-str (decrypt message private-key) :key-fn keyword)))

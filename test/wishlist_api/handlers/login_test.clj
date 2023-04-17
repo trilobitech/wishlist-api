@@ -19,14 +19,14 @@
   (testing "given email-code method should return error when no email received"
     (is (thrown-with-msg?
           IllegalArgumentException #"Email is required"
-          (login {:json-params {:method "email-code"}}))))
+          (login {:json-params {:method "get-email-code"}}))))
 
   (testing "given email-code method should return error when invalid email"
     (is (thrown-with-msg?
           IllegalArgumentException #"Invalid email"
-          (login {:json-params {:method "email-code" :email "some-email"}}))))
+          (login {:json-params {:method "get-email-code" :email "some-email"}}))))
 
   (testing "given email-code method should return success when valid email"
-    (let [result (login {:json-params {:method "email-code" :email "email@example.co"}})]
-      (is (= 200 (:status result)))
-      (is (contains? (:body result) :check)))))
+    (let [result (login {:json-params {:method "get-email-code" :email "email@example.co"}})]
+      (is (= 201 (:status result)))
+      (is (contains? (:body result) :vault)))))
