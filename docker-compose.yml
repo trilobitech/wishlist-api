@@ -5,7 +5,7 @@ services:
 
   api:
     container_name: api
-    image: clojure
+    image: docker.io/clojure
     ports:
       - 3000:3000
     working_dir: /api
