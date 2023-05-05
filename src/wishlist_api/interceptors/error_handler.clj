@@ -1,7 +1,15 @@
 (ns wishlist-api.interceptors.error-handler
   (:require
-    [io.pedestal.interceptor.chain :as interceptor.chain]
+    [clojure.stacktrace :refer [print-stack-trace]]
     [io.pedestal.interceptor.error :refer [error-dispatch]]))
+
+
+(defn internal-error
+  [context ex]
+  (print-stack-trace ex)
+  (assoc context :response
+         {:status  500
+          :body    {:error-message "Internal server error"}}))
 
 
 (def interceptor->error-handler
@@ -13,4 +21,5 @@
             :body    {:error-message (.getMessage (ex-cause ex))}})
 
     :else
-    (assoc context ::interceptor.chain/error ex)))
+    ;; (assoc context ::interceptor.chain/error ex)))
+    (internal-error context ex)))
