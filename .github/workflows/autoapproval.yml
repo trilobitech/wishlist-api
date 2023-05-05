@@ -1,6 +1,6 @@
 on:
   pull_request:
-    types: [opened, reopened, labeled, edited]
+    types: [opened, reopened, ready_for_review, labeled, edited]
   pull_request_review:
     types: [dismissed]
 
