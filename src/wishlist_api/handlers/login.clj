@@ -15,8 +15,16 @@
   (System/currentTimeMillis))
 
 
-(defn generate-token
+(defn send-email
+  [destination content]
+  ;; TODO: implement email sending
+  (println "Sending email to:" destination)
+  (println content))
+
+
+(defn ^:private generate-token
   []
+  ;; TODO: implement token generation
   {:token "token" :refresh_token "refresh_token"})
 
 
@@ -25,13 +33,23 @@
   ([] (generate-code 6)))
 
 
-(defn generate-code-for-email
+(defn ^:private generate-code-for-email
   [email]
   (let [code (generate-code)]
-    (println (str "code: " code))
     {:email (sha1-str email)
      :code code
      :created-at (now)}))
+
+
+(defn email-code-template
+  [{:keys [code]}]
+  (str "Olá, aqui está o seu código de acesso: " code))
+
+
+(defn ^:private send-email-code
+  [email code]
+  (let [content (email-code-template {:code code})]
+    (send-email email content)))
 
 
 (defn ^:private validate-email
@@ -44,11 +62,12 @@
 
 (defn ^:private login-with-email-code
   [{:keys [email]}]
-  (let [vault (->>
-                email
-                validate-email
-                generate-code-for-email
-                encrypt-json)]
+  (let [data (->>
+               email
+               validate-email
+               generate-code-for-email)
+        vault (encrypt-json data)]
+    (send-email-code email (:code data))
     {:status 201
      :body {:vault vault}}))
 
