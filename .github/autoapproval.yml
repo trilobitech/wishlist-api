@@ -3,3 +3,5 @@ from_owner:
 required_labels: []
 apply_labels:
   - automerge
+blacklisted_labels:
+  - wip
