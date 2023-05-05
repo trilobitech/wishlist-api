@@ -1,0 +1,5 @@
+from_owner:
+  - pedrox-hs
+required_labels: []
+apply_labels:
+  - automerge
