@@ -20,6 +20,11 @@
            {:status  400
             :body    {:error-message (.getMessage (ex-cause ex))}})
 
+    [{:type :http-error}]
+    (assoc context :response
+           {:status  (:status (ex-data ex))
+            :body    {:error-message (:message (ex-data ex))}})
+
     :else
     ;; (assoc context ::interceptor.chain/error ex)))
     (internal-error context ex)))
