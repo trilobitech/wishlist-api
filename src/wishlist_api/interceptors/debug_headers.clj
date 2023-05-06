@@ -6,7 +6,7 @@
 
 (def interceptor->maybe-remove-debug-headers
   (interceptor/on-response
-    ::serialize-response
+    ::debug-headers
     (fn [response]
       (if is-debug?
         response
