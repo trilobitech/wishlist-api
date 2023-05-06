@@ -29,8 +29,8 @@
   ;; TODO: add user id to token
   (let [expires_in (time/hours 1)]
     {:token_type "Bearer"
-     :access_token (sign {:userEmail email} (time/hours 1))
-     :refresh_token (sign {:userEmail email} (time/months 1))
+     :access_token (sign {:user_email email} (time/hours 1))
+     :refresh_token (sign {:user_email email} (time/months 1))
      :expires_in (time/in-seconds expires_in)}))
 
 
