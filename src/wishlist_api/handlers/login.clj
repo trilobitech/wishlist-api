@@ -1,8 +1,10 @@
 (ns wishlist-api.handlers.login
   (:require
+    [clj-time.core :as time]
     [clojure.string :refer [blank? join]]
     [wishlist-api.helpers.crypto :refer [decrypt-json encrypt-json]]
     [wishlist-api.helpers.hash :refer [sha1-str]]
+    [wishlist-api.helpers.jwt :refer [sign]]
     [wishlist-api.helpers.validators :refer [valid-email?]]))
 
 
@@ -23,9 +25,13 @@
 
 
 (defn ^:private generate-token
-  []
-  ;; TODO: implement token generation
-  {:token "token" :refresh_token "refresh_token"})
+  [email]
+  ;; TODO: add user id to token
+  (let [expires_in (time/hours 1)]
+    {:token_type "Bearer"
+     :access_token (sign {:userEmail email} (time/hours 1))
+     :refresh_token (sign {:userEmail email} (time/months 1))
+     :expires_in (time/in-seconds expires_in)}))
 
 
 (defn generate-code
@@ -79,21 +85,21 @@
       (not= (sha1-str email) (:email data)) (throw (IllegalArgumentException. "Email invalid"))
       (not= code (:code data)) (throw (IllegalArgumentException. "Code invalid"))
       (> (now) (+ (:created-at data) code-duration-time)) (throw (IllegalArgumentException. "Code expired"))
-      :else {:status 201 :body (generate-token)})))
+      :else {:status 201 :body (generate-token email)})))
 
 
 (defn ^:private login-handler
-  [method]
-  (case method
+  [grant_type]
+  (case grant_type
     "get-email-code" login-with-email-code
     "check-email-code" check-email-code
-    nil (throw (IllegalArgumentException. "Login method is required"))
-    (throw (IllegalArgumentException. (str "Invalid login method: " method)))))
+    nil (throw (IllegalArgumentException. "Field grant_type is required"))
+    (throw (IllegalArgumentException. (str "Invalid grant_type: " grant_type)))))
 
 
 (defn login
   [context]
   (let [body-params (:json-params context)
-        method (:method body-params)
-        handler (login-handler method)]
+        grant_type (:grant_type body-params)
+        handler (login-handler grant_type)]
     (handler body-params)))

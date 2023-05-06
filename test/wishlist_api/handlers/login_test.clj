@@ -6,27 +6,27 @@
 
 (deftest login-test
 
-  (testing "given no method should return error"
+  (testing "given no grant_type should return error"
     (is (thrown-with-msg?
-          IllegalArgumentException #"Login method is required"
+          IllegalArgumentException #"Field grant_type is required"
           (login nil))))
 
-  (testing "given invalid method should return error"
+  (testing "given invalid grant_type should return error"
     (is (thrown-with-msg?
-          IllegalArgumentException #"Invalid login method: method"
-          (login {:json-params {:method "method"}}))))
+          IllegalArgumentException #"Invalid grant_type: grant_type"
+          (login {:json-params {:grant_type "grant_type"}}))))
 
-  (testing "given email-code method should return error when no email received"
+  (testing "given get-email-code grant_type should return error when no email received"
     (is (thrown-with-msg?
           IllegalArgumentException #"Email is required"
-          (login {:json-params {:method "get-email-code"}}))))
+          (login {:json-params {:grant_type "get-email-code"}}))))
 
-  (testing "given email-code method should return error when invalid email"
+  (testing "given get-email-code grant_type should return error when invalid email"
     (is (thrown-with-msg?
           IllegalArgumentException #"Invalid email"
-          (login {:json-params {:method "get-email-code" :email "some-email"}}))))
+          (login {:json-params {:grant_type "get-email-code" :email "some-email"}}))))
 
-  (testing "given email-code method should return success when valid email"
-    (let [result (login {:json-params {:method "get-email-code" :email "email@example.co"}})]
+  (testing "given get-email-code grant_type should return success when valid email"
+    (let [result (login {:json-params {:grant_type "get-email-code" :email "email@example.co"}})]
       (is (= 201 (:status result)))
       (is (contains? (:body result) :vault)))))
