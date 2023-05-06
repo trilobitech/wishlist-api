@@ -7,7 +7,8 @@
                  [io.pedestal/pedestal.route   "0.5.10"]
                  [io.pedestal/pedestal.jetty   "0.5.10"]
                  [org.slf4j/slf4j-simple       "1.7.28"]
-                 [org.clojure/data.json        "2.4.0"]]
+                 [org.clojure/data.json         "2.4.0"]
+                 [buddy/buddy-sign            "3.4.333"]]
   :main ^:skip-aot wishlist-api.core
   :target-path "target/%s"
   :profiles {:uberjar {:aot :all
