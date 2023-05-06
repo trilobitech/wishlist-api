@@ -27,9 +27,11 @@
 (defn ^:private generate-token
   [email]
   ;; TODO: add user id to token
-  {:access_token (sign {:userEmail email} (time/hours 1))
-   :refresh_token (sign {:userEmail email} (time/months 1))
-   :type "bearer"})
+  (let [expires_in (time/hours 1)]
+    {:type "bearer"
+     :access_token (sign {:userEmail email} (time/hours 1))
+     :refresh_token (sign {:userEmail email} (time/months 1))
+     :expires_in (time/in-seconds expires_in)}))
 
 
 (defn generate-code
