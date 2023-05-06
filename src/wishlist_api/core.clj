@@ -3,6 +3,7 @@
   (:require
     [io.pedestal.http :as http]
     [io.pedestal.http.route :as route]
+    [wishlist-api.interceptors.auth-parser :refer [interceptor->parse-auth-header]]
     [wishlist-api.interceptors.body-parser :refer [interceptor->parse-request-body]]
     [wishlist-api.interceptors.debug-headers :refer [interceptor->maybe-remove-debug-headers]]
     [wishlist-api.interceptors.error-handler :refer [interceptor->error-handler]]
@@ -25,6 +26,7 @@
   (-> (server-config)
       (http/default-interceptors)
       (update ::http/interceptors conj
+              interceptor->parse-auth-header
               interceptor->parse-request-body
               interceptor->maybe-remove-debug-headers
               interceptor->response-serializer

@@ -12,3 +12,8 @@
   (jwt/sign
     (assoc payload :exp (time/plus (time/now) expiration))
     secret))
+
+
+(defn unsign
+  [token]
+  (jwt/unsign token secret))
