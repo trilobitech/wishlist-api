@@ -26,11 +26,11 @@
   (-> (server-config)
       (http/default-interceptors)
       (update ::http/interceptors conj
-              interceptor->parse-auth-header
-              interceptor->parse-request-body
-              interceptor->maybe-remove-debug-headers
               interceptor->response-serializer
-              interceptor->error-handler)
+              interceptor->maybe-remove-debug-headers
+              interceptor->parse-request-body
+              interceptor->error-handler
+              interceptor->parse-auth-header)
       (http/create-server)))
 
 
