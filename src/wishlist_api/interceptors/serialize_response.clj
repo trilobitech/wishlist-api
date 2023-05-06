@@ -8,7 +8,9 @@
   (interceptor/on-response
     ::serialize-response
     (fn [response]
-      (assoc response
-             :headers {"Content-Type" "application/json"}
-             :body    (let [body (:body response)]
-                        (if (map? body) (json/write-str body) body))))))
+      (let [{:keys [headers body]} response
+            new-headers (assoc headers "Content-Type" "application/json")
+            new-body (if (map? body) (json/write-str body) body)]
+        (assoc response
+               :headers new-headers
+               :body    new-body)))))

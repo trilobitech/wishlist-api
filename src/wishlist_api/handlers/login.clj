@@ -75,6 +75,7 @@
         vault (encrypt-json data)]
     (send-email-code email (:code data))
     {:status 201
+     :headers {"X-Debug-Email-Code" (:code data)}
      :body {:vault vault}}))
 
 
