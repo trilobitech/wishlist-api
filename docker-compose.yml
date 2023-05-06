@@ -6,9 +6,11 @@ services:
   api:
     container_name: api
     image: docker.io/clojure
+    working_dir: /api
+    environment:
+      DEBUG: "true"
     ports:
       - 3000:3000
-    working_dir: /api
     command: [ "lein", "run" ]
     volumes:
       - ./:/api
