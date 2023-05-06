@@ -89,17 +89,17 @@
 
 
 (defn ^:private login-handler
-  [method]
-  (case method
+  [grant_type]
+  (case grant_type
     "get-email-code" login-with-email-code
     "check-email-code" check-email-code
-    nil (throw (IllegalArgumentException. "Login method is required"))
-    (throw (IllegalArgumentException. (str "Invalid login method: " method)))))
+    nil (throw (IllegalArgumentException. "Field grant_type is required"))
+    (throw (IllegalArgumentException. (str "Invalid grant_type: " grant_type)))))
 
 
 (defn login
   [context]
   (let [body-params (:json-params context)
-        method (:grant_type body-params)
-        handler (login-handler method)]
+        grant_type (:grant_type body-params)
+        handler (login-handler grant_type)]
     (handler body-params)))
