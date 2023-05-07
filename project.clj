@@ -9,7 +9,8 @@
                  [org.slf4j/slf4j-simple       "1.7.28"]
                  [org.clojure/data.json         "2.4.0"]
                  [buddy/buddy-sign            "3.4.333"]
-                 [clj-time                     "0.15.2"]]
+                 [clj-time                     "0.15.2"]
+                 [com.walmartlabs/lacinia       "1.2.1"]]
   :main ^:skip-aot wishlist-api.core
   :target-path "target/%s"
   :profiles {:uberjar {:aot :all
