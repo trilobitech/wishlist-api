@@ -20,6 +20,11 @@
                  [environ                       "1.2.0"]]
 
   :profiles {:uberjar {:aot :all
-                       :jvm-opts ["-Dclojure.compiler.direct-linking=true"]}
+                       :jvm-opts ["-Dclojure.compiler.direct-linking=true"]
+                       :dependencies [[com.datomic/client-cloud "1.0.123"]]}
 
-             :dev {:env {:debug-mode "true"}}})
+             :dev {:repositories [["cognitect-dev-tools" {:url      "https://dev-tools.cognitect.com/maven/releases/"
+                                                          :username :env
+                                                          :password :env}]]
+                   :dependencies [[com.datomic/dev-local "1.0.243"]]
+                   :env {:debug-mode "true"}}})

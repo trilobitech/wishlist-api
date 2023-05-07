@@ -7,9 +7,12 @@ services:
     container_name: api
     image: docker.io/clojure
     working_dir: /api
+    environment:
+      LEIN_USERNAME: "${LEIN_USERNAME}"
+      LEIN_PASSWORD: "${LEIN_PASSWORD}"
     ports:
       - 3000:3000
-    command: [ "lein", "run" ]
+    command: [ "sh", "-c", "lein with-profile dev run || cat /tmp/clojure-*" ]
     volumes:
       - ./:/api
       - maven-deps:/root/.m2
