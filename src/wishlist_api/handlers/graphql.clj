@@ -7,16 +7,20 @@
     [com.walmartlabs.lacinia.util :as util]))
 
 
-(defn wishlist-schema
+(def ^:private resolver-registry
+  {})
+
+
+(defn ^:private wishlist-schema
   []
   (-> (io/resource "wishlist-schema.edn")
       slurp
       edn/read-string
-      (util/inject-resolvers {})
+      (util/inject-resolvers resolver-registry)
       schema/compile))
 
 
-(def compiled-schema (wishlist-schema))
+(def ^:private compiled-schema (wishlist-schema))
 
 
 (defn graphql
@@ -26,6 +30,7 @@
                  compiled-schema
                  (:query body-params)
                  (:variables body-params)
-                 (:operationName body-params))]
-    {:status 200
+                 context)
+        status (if (:errors result) 400 200)]
+    {:status status
      :body result}))

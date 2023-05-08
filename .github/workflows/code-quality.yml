@@ -95,3 +95,6 @@ jobs:
 
       - name: Run tests
         run: lein test
+        env:
+          LEIN_USERNAME: ${{ secrets.LEIN_USERNAME }}
+          LEIN_PASSWORD: ${{ secrets.LEIN_PASSWORD }}

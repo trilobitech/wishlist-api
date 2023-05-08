@@ -3,6 +3,7 @@
   (:require
     [io.pedestal.http :as http]
     [io.pedestal.http.route :as route]
+    [wishlist-api.config :as config]
     [wishlist-api.interceptors.auth-parser :refer [interceptor->parse-auth-header]]
     [wishlist-api.interceptors.body-parser :refer [interceptor->parse-request-body]]
     [wishlist-api.interceptors.debug-headers :refer [interceptor->maybe-remove-debug-headers]]
@@ -13,12 +14,11 @@
 
 (defn ^:private server-config
   []
-  (let [http-routes (route/expand-routes (routes))
-        http-port   (Integer/parseInt (or (System/getenv "PORT") "3000"))]
+  (let [http-routes (route/expand-routes (routes))]
     {::http/routes http-routes
      ::http/type   :jetty
      ::http/host   "0.0.0.0"
-     ::http/port   http-port}))
+     ::http/port   config/http-port}))
 
 
 (defn ^:private create-server

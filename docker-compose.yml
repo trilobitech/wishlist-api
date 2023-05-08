@@ -8,15 +8,19 @@ services:
     image: docker.io/clojure
     working_dir: /api
     environment:
-      DEBUG: "true"
+      LEIN_USERNAME: "${LEIN_USERNAME}"
+      LEIN_PASSWORD: "${LEIN_PASSWORD}"
     ports:
       - 3000:3000
-    command: [ "lein", "run" ]
+    command: [ "sh", "-c", "lein run || cat /tmp/clojure-*" ]
     volumes:
       - ./:/api
       - maven-deps:/root/.m2
+      - datomic-data:/var/lib/datomic
     restart: unless-stopped
 
 volumes:
   maven-deps:
     name: maven-deps
+  datomic-data:
+    name: datomic-data
