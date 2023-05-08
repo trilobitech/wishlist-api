@@ -28,7 +28,7 @@
       (throw+ {:type :token-validation
                :cause :nbf
                :message "Token not valid yet"}))
-    (catch [:cause (or :signature :header)] _
+    (catch Object {:keys [cause]}
       (throw+ {:type :token-validation
-               :cause :invalid
+               :cause cause
                :message "Invalid token"}))))
