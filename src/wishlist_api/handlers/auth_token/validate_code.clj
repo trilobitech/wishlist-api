@@ -24,6 +24,10 @@
   [{:keys [vault email code]}]
   (let [data (decrypt-json vault)]
     (cond
+      (not data)
+      (throw+ {:type :input-validation
+               :message "Something went wrong, please request a new code"})
+
       (not= (sha1-str email) (:email data))
       (throw+ {:type :input-validation
                :message "Email invalid"})
