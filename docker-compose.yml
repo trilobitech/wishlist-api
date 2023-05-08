@@ -12,12 +12,15 @@ services:
       LEIN_PASSWORD: "${LEIN_PASSWORD}"
     ports:
       - 3000:3000
-    command: [ "sh", "-c", "lein with-profile dev run || cat /tmp/clojure-*" ]
+    command: [ "sh", "-c", "lein run || cat /tmp/clojure-*" ]
     volumes:
       - ./:/api
       - maven-deps:/root/.m2
+      - datomic-data:/var/lib/datomic
     restart: unless-stopped
 
 volumes:
   maven-deps:
     name: maven-deps
+  datomic-data:
+    name: datomic-data
