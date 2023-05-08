@@ -17,7 +17,8 @@
                  [buddy/buddy-sign            "3.4.333"]
                  [clj-time                     "0.15.2"]
                  [com.walmartlabs/lacinia       "1.2.1"]
-                 [environ                       "1.2.0"]]
+                 [environ                       "1.2.0"]
+                 [slingshot                    "0.12.2"]]
 
   :profiles {:uberjar {:aot :all
                        :jvm-opts ["-Dclojure.compiler.direct-linking=true"]
@@ -27,4 +28,5 @@
                                                           :username :env
                                                           :password :env}]]
                    :dependencies [[com.datomic/dev-local "1.0.243"]]
-                   :env {:debug-mode "true"}}})
+                   :env {:debug-mode "true"}}
+             :test {:dependencies [[nubank/matcher-combinators "3.8.5"]]}})
