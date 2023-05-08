@@ -13,5 +13,5 @@
             token (if (string? authorization-header)
                     (str/replace (str/trim authorization-header) #"(?i)^bearer\s+(\S+)$" "$1")
                     nil)
-            auth-data (if token (unsign token) nil)]
+            auth-data (if token (unsign :access-token token) nil)]
         (assoc request :auth-data auth-data)))))

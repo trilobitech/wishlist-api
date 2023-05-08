@@ -7,6 +7,7 @@
 (defn internal-error
   [context ex]
   (print-stack-trace ex)
+  (println "Internal server error")
   (assoc context :response
          {:status  500
           :body    {:error-message "Internal server error"}}))
@@ -20,9 +21,9 @@
            {:status  400
             :body    {:error-message (.getMessage (ex-cause ex))}})
 
-    [{:type :http-error}]
+    [{:type :token-validation}]
     (assoc context :response
-           {:status  (:status (ex-data ex))
+           {:status  401
             :body    {:error-message (:message (ex-data ex))}})
 
     :else
