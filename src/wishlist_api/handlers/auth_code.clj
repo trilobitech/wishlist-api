@@ -2,22 +2,26 @@
   (:require
     [clj-time.coerce :as time-coerce]
     [clj-time.core :as time]
+    [clojure.core.strint :refer [<<]]
     [clojure.string :refer [blank? join]]
+    [clojure.tools.logging :as logging]
+    [slingshot.slingshot :refer [throw+]]
     [wishlist-api.helpers.crypto :refer [encrypt-json]]
     [wishlist-api.helpers.hash :refer [sha1-str]]
     [wishlist-api.helpers.validators :refer [valid-email?]]))
 
 
 (defn ^:private email-code-template
+  #_{:clj-kondo/ignore [:unused-binding]}
   [{:keys [code]}]
-  (str "Olá, aqui está o seu código de acesso: " code))
+  (<< "Olá, aqui está o seu código de acesso: ~{code}"))
 
 
 (defn ^:private send-email
+  #_{:clj-kondo/ignore [:unused-binding]}
   [destination content]
   ;; TODO: implement email sending
-  (println "Sending email to:" destination)
-  (println content))
+  (logging/log :debug (<< "Sending email…\nDestination: ~{destination}\nContent: ~{content}")))
 
 
 (defn ^:private send-email-code
@@ -43,8 +47,10 @@
   [email]
   (cond
     (valid-email? email) email
-    (blank? email) (throw (IllegalArgumentException. "Email is required"))
-    :else (throw (IllegalArgumentException. (str "Invalid email: " email)))))
+    (blank? email) (throw+ {:type :input-validation
+                            :message "Field email is required"})
+    :else (throw+ {:type :input-validation
+                   :message (<< "Invalid email: ~{email}")})))
 
 
 (defn ^:private generate-auth-code

@@ -1,7 +1,7 @@
 (ns wishlist-api.routes
   (:require
     [wishlist-api.handlers.auth-code :refer [auth-code]]
-    [wishlist-api.handlers.auth-token :refer [auth-token]]
+    [wishlist-api.handlers.auth-token.grant-handler :refer [auth-token]]
     [wishlist-api.handlers.graphql :refer [graphql]]))
 
 

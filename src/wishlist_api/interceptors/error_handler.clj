@@ -16,10 +16,10 @@
 (def interceptor->error-handler
   (error-dispatch
     [context ex]
-    [{:exception-type :java.lang.IllegalArgumentException}]
+    [{:type :input-validation}]
     (assoc context :response
            {:status  400
-            :body    {:error-message (.getMessage (ex-cause ex))}})
+            :body    {:error-message (:message (ex-data ex))}})
 
     [{:type :token-validation}]
     (assoc context :response
