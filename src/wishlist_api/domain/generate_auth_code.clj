@@ -12,9 +12,8 @@
 
 
 (defn ^:private email-code-template
-  #_{:clj-kondo/ignore [:unused-binding]}
   [{:keys [code]}]
-  (<< "Olá, aqui está o seu código de acesso: ~{code}"))
+  (str "Olá, aqui está o seu código de acesso: " code))
 
 
 (defn ^:private send-email

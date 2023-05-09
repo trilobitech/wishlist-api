@@ -2,7 +2,8 @@
   (:require
     [slingshot.slingshot :refer [throw+]]
     [wishlist-api.config :refer [is-debug?]]
-    [wishlist-api.data.datasources.user-datasource :as ds]))
+    [wishlist-api.data.datasources.user-datasource :as ds]
+    [wishlist-api.domain.invalidate-token :refer [invalidate-user-tokens]]))
 
 
 (defn know-me
@@ -10,6 +11,7 @@
   (let [email (-> context :auth-data :user_email)
         data (assoc args :email email)
         result (ds/user->insert data)]
+    (invalidate-user-tokens result)
     result))
 
 
