@@ -1,6 +1,7 @@
 (ns wishlist-api.domain.user-interactor
   (:require
-    [slingshot.slingshot :refer [throw+]]
+    [com.walmartlabs.lacinia.resolve :refer [resolve-as]]
+    [slingshot.slingshot :refer [try+]]
     [wishlist-api.config :refer [is-debug?]]
     [wishlist-api.data.datasources.user-datasource :as ds]
     [wishlist-api.domain.invalidate-token :refer [invalidate-user-tokens]]))
@@ -8,24 +9,30 @@
 
 (defn know-me
   [context args _]
-  (let [email (-> context :auth-data :user_email)
-        data (assoc args :email email)
-        result (ds/user->insert data)]
-    (invalidate-user-tokens result)
-    result))
+  (try+
+    (let [email (-> context :auth-data :user_email)
+          data (assoc args :email email)
+          result (ds/user->insert data)]
+      (invalidate-user-tokens result)
+      result)
+    (catch [:cognitect.anomalies/category :cognitect.anomalies/conflict] _
+      (resolve-as nil {:message "User already exists, please use `changeMe` instead."
+                       :type :conflict
+                       :domain :application}))))
 
 
 (defn change-me
   [context args _]
-  (let [user-id (-> context :auth-data :user_id)]
+  (let [user-id (get-in context [:auth-data :user_id])]
     (cond
-      (not user-id)
-      (throw+ {:type :not-found
-               :message "User does not exist yet"
-               :domain :application}))
-    (ds/user->update {:id user-id
-                      :name (:name args)
-                      :email (:email args)})))
+      user-id
+      (ds/user->update {:id user-id
+                        :name (:name args)
+                        :email (:email args)})
+      :else
+      (resolve-as nil {:message "User does not exist yet, please use `createUser` first."
+                       :type :not-found
+                       :domain :application}))))
 
 
 (defn who-am-i
@@ -47,7 +54,8 @@
 (defn all-of-us
   [_ _ _]
   (cond (not is-debug?)
-        (throw+ {:type :forbidden
-                 :message "You are not authorized to perform this action"
-                 :domain :application}))
-  (ds/user->find-all))
+        (resolve-as nil {:type :not-implemented
+                         :message "This query is not implemented yet."
+                         :domain :application})
+        :else
+        (ds/user->find-all)))
