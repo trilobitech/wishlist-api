@@ -1,26 +1,24 @@
 (ns wishlist-api.interceptors.error-handler
   (:require
-    [clojure.stacktrace :refer [print-stack-trace]]
+    [clojure.tools.logging :as logging]
     [io.pedestal.interceptor.error :refer [error-dispatch]]
-    [wishlist-api.helpers.http :refer [status-code]]))
+    [wishlist-api.helpers.http :refer [status-code status-message]]))
+
+
+(defn build-error-response
+  [context {:keys [type message]}]
+  (let [status (get status-code type (status-code :internal))
+        error-message (or message (status-message type))]
+    (assoc context :response
+           {:status  status
+            :body    {:errors
+                      [{:message error-message}]}})))
 
 
 (defn internal-error
   [context ex]
-  (print-stack-trace ex)
-  (println "Internal server error")
-  (assoc context :response
-         {:status  (:internal status-code)
-          :body    {:error-message "Internal server error"}}))
-
-
-(defn build-error-response
-  [context err-data]
-  (let [message (:message err-data)
-        status (get status-code (:type err-data) (status-code :internal))]
-    (assoc context :response
-           {:status  status
-            :body    {:error-message message}})))
+  (logging/error "Internal server error" ex)
+  (build-error-response context {:type :internal :message "Internal server error"}))
 
 
 (def interceptor->error-handler
