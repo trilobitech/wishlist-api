@@ -4,7 +4,8 @@
     [clojure.java.io :as io]
     [com.walmartlabs.lacinia :refer [execute]]
     [com.walmartlabs.lacinia.schema :as schema]
-    [com.walmartlabs.lacinia.util :as util]))
+    [com.walmartlabs.lacinia.util :as util]
+    [wishlist-api.helpers.http :refer [status-code]]))
 
 
 (def ^:private resolver-registry
@@ -31,6 +32,6 @@
                  (:query body-params)
                  (:variables body-params)
                  context)
-        status (if (:errors result) 400 200)]
+        status (status-code (if (:errors result) :bad-request :ok))]
     {:status status
      :body result}))

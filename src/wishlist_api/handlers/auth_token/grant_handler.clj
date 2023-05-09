@@ -11,10 +11,12 @@
   (case grant_type
     "validate_code" validate-code
     "refresh_token" token-refresh
-    nil (throw+ {:type :input-validation
-                 :message "Field grant_type is required"})
-    (throw+ {:type :input-validation
-             :message (<< "Invalid grant_type: ~{grant_type}")})))
+    nil (throw+ {:type :bad-request
+                 :message "Field grant_type is required"
+                 :domain :application})
+    (throw+ {:type :bad-request
+             :message (<< "Invalid grant_type: ~{grant_type}")
+             :domain :application})))
 
 
 (defn auth-token

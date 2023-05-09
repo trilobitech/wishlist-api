@@ -8,6 +8,7 @@
     [slingshot.slingshot :refer [throw+]]
     [wishlist-api.helpers.crypto :refer [encrypt-json]]
     [wishlist-api.helpers.hash :refer [sha1-str]]
+    [wishlist-api.helpers.http :refer [status-code]]
     [wishlist-api.helpers.validators :refer [valid-email?]]))
 
 
@@ -47,10 +48,12 @@
   [email]
   (cond
     (valid-email? email) email
-    (blank? email) (throw+ {:type :input-validation
-                            :message "Field email is required"})
-    :else (throw+ {:type :input-validation
-                   :message (<< "Invalid email: ~{email}")})))
+    (blank? email) (throw+ {:type :bad-request
+                            :message "Field email is required"
+                            :domain :application})
+    :else (throw+ {:type :bad-request
+                   :message (<< "Invalid email: ~{email}")
+                   :domain :application})))
 
 
 (defn ^:private generate-auth-code
@@ -62,7 +65,7 @@
         vault (encrypt-json data)
         code (:code data)]
     (send-email-code email code)
-    {:status 201
+    {:status (status-code :created)
      :headers {"X-Debug-Email-Code" code}
      :body {:vault vault}}))
 
