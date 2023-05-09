@@ -14,16 +14,20 @@
           :body    {:error-message "Internal server error"}}))
 
 
+(defn build-error-response
+  [context err-data]
+  (let [message (:message err-data)
+        status (get status-code (:type err-data) (status-code :internal))]
+    (assoc context :response
+           {:status  status
+            :body    {:error-message message}})))
+
+
 (def interceptor->error-handler
   (error-dispatch
     [context ex]
     [{:domain :application}]
-    (let [err-data (ex-data ex)
-          message (:message err-data)
-          status (get status-code (:type err-data) (status-code :internal))]
-      (assoc context :response
-             {:status  status
-              :body    {:error-message message}}))
+    (build-error-response context (ex-data ex))
 
     :else
     ;; (assoc context ::interceptor.chain/error ex)))

@@ -7,18 +7,23 @@
 
 (defn know-me
   [context args _]
-  (->> context
-       :auth-data
-       :user_email
-       (assoc args :email)
-       ds/user->insert))
+  (let [email (-> context :auth-data :user_email)
+        data (assoc args :email email)
+        result (ds/user->insert data)]
+    result))
 
 
 (defn change-me
   [context args _]
-  (ds/user->update {:id (get-in context [:auth-data :user_id])
-                    :name (:name args)
-                    :email (:email args)}))
+  (let [user-id (-> context :auth-data :user_id)]
+    (cond
+      (not user-id)
+      (throw+ {:type :not-found
+               :message "User does not exist yet"
+               :domain :application}))
+    (ds/user->update {:id user-id
+                      :name (:name args)
+                      :email (:email args)})))
 
 
 (defn who-am-i
