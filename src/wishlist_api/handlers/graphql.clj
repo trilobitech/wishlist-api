@@ -5,11 +5,16 @@
     [com.walmartlabs.lacinia :refer [execute]]
     [com.walmartlabs.lacinia.schema :as schema]
     [com.walmartlabs.lacinia.util :as util]
-    [wishlist-api.helpers.http :refer [status-code]]))
+    [wishlist-api.helpers.http :refer [status-code]]
+    [wishlist-api.resolvers.user-resolver :as users]))
 
 
 (def ^:private resolver-registry
-  {})
+  {:queries/me users/who-am-i
+   :queries/userById users/who-is-it
+   :queries/users users/all-of-us
+   :mutations/createUser users/know-me
+   :mutations/updateUser users/change-me})
 
 
 (defn ^:private wishlist-schema

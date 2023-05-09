@@ -1,6 +1,7 @@
 (ns wishlist-api.data.client
   (:require
-    [datomic.client.api :as d]))
+    [datomic.client.api :as d]
+    [wishlist-api.data.schemas.user-schema :refer [user-schema]]))
 
 
 (def ^:private client
@@ -14,3 +15,9 @@
 
 
 (def conn (d/connect client {:db-name "wishlist"}))
+
+
+(def ^:private all-schemas (concat user-schema []))
+
+
+(d/transact conn {:tx-data all-schemas})
