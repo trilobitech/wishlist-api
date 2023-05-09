@@ -4,11 +4,17 @@
     [clojure.java.io :as io]
     [com.walmartlabs.lacinia :refer [execute]]
     [com.walmartlabs.lacinia.schema :as schema]
-    [com.walmartlabs.lacinia.util :as util]))
+    [com.walmartlabs.lacinia.util :as util]
+    [wishlist-api.domain.user-interactor :as users]
+    [wishlist-api.helpers.http :refer [status-code]]))
 
 
 (def ^:private resolver-registry
-  {})
+  {:queries/me users/who-am-i
+   :queries/userById users/who-is-it
+   :queries/users users/all-of-us
+   :mutations/createUser users/know-me
+   :mutations/updateUser users/change-me})
 
 
 (defn ^:private wishlist-schema
@@ -31,6 +37,7 @@
                  (:query body-params)
                  (:variables body-params)
                  context)
-        status (if (:errors result) 400 200)]
+        status-key (if (:errors result) :bad-request :ok)
+        status (status-code status-key)]
     {:status status
      :body result}))

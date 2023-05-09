@@ -1,2 +1,23 @@
-{:queries
- {}}
+{:objects
+ {:User
+  {:description "A user of the application"
+   :fields
+   {:id {:type (non-null String)}
+    :name {:type String}
+    :email {:type String}}}}
+
+ :queries
+ {:me {:type :User}
+  :userById {:type :User
+             :args
+             {:id {:type (non-null String)}}}
+  :users {:type (list :User)}}
+
+ :mutations
+ {:createUser {:type :User
+               :args
+               {:name {:type (non-null String)}}}
+  :updateUser {:type :User
+               :args
+               {:name {:type String}
+                :email {:type String}}}}}

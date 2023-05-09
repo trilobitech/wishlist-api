@@ -21,14 +21,17 @@
   (try+
     (jwt/unsign token (str type secret))
     (catch [:cause :exp] _
-      (throw+ {:type :token-validation
+      (throw+ {:type :unauthorized
                :cause :exp
-               :message "Token expired"}))
+               :message "Token expired"
+               :domain :application}))
     (catch [:cause :nbf] _
-      (throw+ {:type :token-validation
+      (throw+ {:type :unauthorized
                :cause :nbf
-               :message "Token not valid yet"}))
+               :message "Token not valid yet"
+               :domain :application}))
     (catch Object {:keys [cause]}
-      (throw+ {:type :token-validation
+      (throw+ {:type :unauthorized
                :cause cause
-               :message "Invalid token"}))))
+               :message "Invalid token"
+               :domain :application}))))

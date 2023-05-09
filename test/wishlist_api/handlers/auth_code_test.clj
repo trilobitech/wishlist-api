@@ -2,7 +2,7 @@
   (:require
     [clojure.test :refer [deftest is testing]]
     [matcher-combinators.test :refer [thrown-match?]]
-    [wishlist-api.handlers.auth-code :refer [auth-code]]))
+    [wishlist-api.handlers.auth.code :refer [auth-code]]))
 
 
 (deftest auth-code-test
@@ -10,16 +10,18 @@
   (testing "should return error when no email received"
     (is (thrown-match?
           clojure.lang.ExceptionInfo
-          {:type :input-validation
-           :message #"Field email is required"}
+          {:type :bad-request
+           :message #"Field email is required"
+           :domain :application}
           (auth-code {:json-params {}}))))
 
 
   (testing "should return error when invalid email"
     (is (thrown-match?
           clojure.lang.ExceptionInfo
-          {:type :input-validation
-           :message #"Invalid email: some-email"}
+          {:type :bad-request
+           :message #"Invalid email: some-email"
+           :domain :application}
           (auth-code {:json-params {:email "some-email"}}))))
 
 

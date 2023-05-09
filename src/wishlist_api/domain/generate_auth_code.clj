@@ -1,4 +1,4 @@
-(ns wishlist-api.handlers.auth-code
+(ns wishlist-api.domain.generate-auth-code
   (:require
     [clj-time.coerce :as time-coerce]
     [clj-time.core :as time]
@@ -12,9 +12,8 @@
 
 
 (defn ^:private email-code-template
-  #_{:clj-kondo/ignore [:unused-binding]}
   [{:keys [code]}]
-  (<< "Olá, aqui está o seu código de acesso: ~{code}"))
+  (str "Olá, aqui está o seu código de acesso: " code))
 
 
 (defn ^:private send-email
@@ -47,13 +46,15 @@
   [email]
   (cond
     (valid-email? email) email
-    (blank? email) (throw+ {:type :input-validation
-                            :message "Field email is required"})
-    :else (throw+ {:type :input-validation
-                   :message (<< "Invalid email: ~{email}")})))
+    (blank? email) (throw+ {:type :bad-request
+                            :message "Field email is required"
+                            :domain :application})
+    :else (throw+ {:type :bad-request
+                   :message (<< "Invalid email: ~{email}")
+                   :domain :application})))
 
 
-(defn ^:private generate-auth-code
+(defn generate-auth-code
   [{:keys [email]}]
   (let [data (->>
                email
@@ -62,13 +63,5 @@
         vault (encrypt-json data)
         code (:code data)]
     (send-email-code email code)
-    {:status 201
-     :headers {"X-Debug-Email-Code" code}
-     :body {:vault vault}}))
-
-
-(defn auth-code
-  [context]
-  (-> context
-      :json-params
-      generate-auth-code))
+    {:vault vault
+     :code code}))
