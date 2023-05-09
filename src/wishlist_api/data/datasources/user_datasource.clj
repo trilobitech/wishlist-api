@@ -22,12 +22,14 @@
 
 (defn user->update
   [user]
-  (let [data {:db/id [:user/id (uuid (:id user))]
-              :user/name (:name user)
-              :user/email (:email user)}
+  (let [temp-id [:user/id (uuid (:id user))]
+        data (->> {:db/id temp-id
+                   :user/name (:name user)
+                   :user/email (:email user)}
+                  (filter second)
+                  (into {}))
         tx-result (d/transact conn {:tx-data [data]})
         db-after (:db-after tx-result)
-        temp-id (-> tx-result :tempids (get "users"))
         user (d/pull db-after '[*] temp-id)]
     {:id (:user/id user)
      :name (:user/name user)
