@@ -20,7 +20,7 @@
   #_{:clj-kondo/ignore [:unused-binding]}
   [destination content]
   ;; TODO: implement email sending
-  (logging/log :debug (<< "Sending email…\nDestination: ~{destination}\nContent: ~{content}")))
+  (logging/debug (<< "Sending email…\nDestination: ~{destination}\nContent: ~{content}")))
 
 
 (defn ^:private send-email-code

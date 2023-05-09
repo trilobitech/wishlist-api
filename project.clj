@@ -4,8 +4,9 @@
   :license {:name "EPL-2.0 OR GPL-2.0-or-later WITH Classpath-exception-2.0"
             :url "https://www.eclipse.org/legal/epl-2.0/"}
 
-  :main ^:skip-aot wishlist-api.core
+  :main ^:skip-aot wishlist-api.server
   :target-path "target/%s"
+  :resource-paths ["config", "resources"]
 
   :plugins [[lein-environ "1.2.0"]]
 
@@ -24,10 +25,13 @@
                        :jvm-opts ["-Dclojure.compiler.direct-linking=true"]
                        :dependencies [[com.datomic/client-cloud "1.0.123"]]}
 
-             :dev {:repositories [["cognitect-dev-tools" {:url      "https://dev-tools.cognitect.com/maven/releases/"
+             :dev {:aliases {"run-dev" ["trampoline" "run" "-m" "server/run-dev"]}
+                   :source-paths ["dev"]
+                   :env {:env-mode "dev"}
+                   :repositories [["cognitect-dev-tools" {:url      "https://dev-tools.cognitect.com/maven/releases/"
                                                           :username :env
                                                           :password :env}]]
-                   :dependencies [[com.datomic/dev-local "1.0.243"]]
-                   :env {:env-mode "dev"}}
-             :test {:dependencies [[nubank/matcher-combinators "3.8.5"]]
-                    :env {:env-mode "test"}}})
+                   :dependencies [[io.pedestal/pedestal.service-tools "0.5.11-beta-1"]
+                                  [com.datomic/dev-local "1.0.243"]]}
+             :test {:env {:env-mode "test"}
+                    :dependencies [[nubank/matcher-combinators "3.8.5"]]}})

@@ -12,7 +12,7 @@ services:
       LEIN_PASSWORD: "${LEIN_PASSWORD}"
     ports:
       - 3000:3000
-    command: [ "sh", "-c", "lein run || cat /tmp/clojure-*" ]
+    command: [ "sh", "-c", "lein run-dev || cat /tmp/clojure-*" ]
     volumes:
       - ./:/api
       - maven-deps:/root/.m2

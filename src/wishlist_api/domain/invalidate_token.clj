@@ -6,4 +6,4 @@
 (defn invalidate-user-tokens
   [{:keys [email]}]
   ;; TODO: Implement token invalidation
-  (logging/log :info (str "Invalidating token for user: " email)))
+  (logging/info (str "Invalidating token for user: " email)))
