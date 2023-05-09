@@ -1,4 +1,4 @@
-(ns wishlist-api.handlers.auth-token.common
+(ns wishlist-api.data.datasources.token-datasource
   (:require
     [clj-time.core :as time]
     [wishlist-api.helpers.jwt :as jwt]))
@@ -21,5 +21,5 @@
 
 
 (defn generate-token-for-user
-  ([{:keys [id email]}]
-   (generate-token {:user_id id :user_email email})))
+  [{:keys [id email]}]
+  (generate-token {:user_id id :user_email email}))

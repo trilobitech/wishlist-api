@@ -1,4 +1,4 @@
-(ns wishlist-api.handlers.auth-code
+(ns wishlist-api.domain.generate-auth-code
   (:require
     [clj-time.coerce :as time-coerce]
     [clj-time.core :as time]
@@ -8,7 +8,6 @@
     [slingshot.slingshot :refer [throw+]]
     [wishlist-api.helpers.crypto :refer [encrypt-json]]
     [wishlist-api.helpers.hash :refer [sha1-str]]
-    [wishlist-api.helpers.http :refer [status-code]]
     [wishlist-api.helpers.validators :refer [valid-email?]]))
 
 
@@ -56,7 +55,7 @@
                    :domain :application})))
 
 
-(defn ^:private generate-auth-code
+(defn generate-auth-code
   [{:keys [email]}]
   (let [data (->>
                email
@@ -65,13 +64,5 @@
         vault (encrypt-json data)
         code (:code data)]
     (send-email-code email code)
-    {:status (status-code :created)
-     :headers {"X-Debug-Email-Code" code}
-     :body {:vault vault}}))
-
-
-(defn auth-code
-  [context]
-  (-> context
-      :json-params
-      generate-auth-code))
+    {:vault vault
+     :code code}))

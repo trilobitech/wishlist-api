@@ -1,10 +1,8 @@
-(ns wishlist-api.handlers.auth-token.token-refresh
+(ns wishlist-api.domain.token-refresh
   (:require
     [slingshot.slingshot :refer [throw+ try+]]
-    [wishlist-api.data.datasources.user-datasource :refer [user->find-by-email
-                                                           user->find-by-id]]
-    [wishlist-api.handlers.auth-token.common :refer [generate-token-for-user]]
-    [wishlist-api.helpers.http :refer [status-code]]
+    [wishlist-api.data.datasources.token-datasource :refer [generate-token-for-user]]
+    [wishlist-api.data.datasources.user-datasource :refer [user->find-by-id-or-email]]
     [wishlist-api.helpers.jwt :as jwt]))
 
 
@@ -25,15 +23,13 @@
 
 (defn ^:private user-from-token
   [{:keys [user_id user_email]}]
-  (if user_id
-    (user->find-by-id user_id)
-    (user->find-by-email user_email)))
+  (or (user->find-by-id-or-email user_id user_email)
+      {:email user_email}))
 
 
 (defn token-refresh
   [{:keys [refresh_token]}]
-  {:status (status-code :created)
-   :body (-> refresh_token
-             get-refresh-token-data
-             user-from-token
-             generate-token-for-user)})
+  (-> refresh_token
+      get-refresh-token-data
+      user-from-token
+      generate-token-for-user))

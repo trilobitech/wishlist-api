@@ -1,4 +1,4 @@
-(ns wishlist-api.resolvers.user-resolver
+(ns wishlist-api.domain.user-interactor
   (:require
     [slingshot.slingshot :refer [throw+]]
     [wishlist-api.config :refer [is-debug?]]
@@ -7,8 +7,11 @@
 
 (defn know-me
   [context args _]
-  (ds/user->insert {:name args
-                    :email (get-in context [:auth-data :user_email])}))
+  (->> context
+       :auth-data
+       :user_email
+       (assoc args :email)
+       ds/user->insert))
 
 
 (defn change-me
@@ -20,7 +23,8 @@
 
 (defn who-am-i
   [context _ _]
-  (ds/user->find-by-email (get-in context [:auth-data :user_email])))
+  (let [{:keys [user_id user_email]} (:auth-data context)]
+    (ds/user->find-by-id-or-email user_id user_email)))
 
 
 (defn who-is-it

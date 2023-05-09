@@ -5,8 +5,8 @@
     [com.walmartlabs.lacinia :refer [execute]]
     [com.walmartlabs.lacinia.schema :as schema]
     [com.walmartlabs.lacinia.util :as util]
-    [wishlist-api.helpers.http :refer [status-code]]
-    [wishlist-api.resolvers.user-resolver :as users]))
+    [wishlist-api.domain.user-interactor :as users]
+    [wishlist-api.helpers.http :refer [status-code]]))
 
 
 (def ^:private resolver-registry
@@ -37,6 +37,7 @@
                  (:query body-params)
                  (:variables body-params)
                  context)
-        status (status-code (if (:errors result) :bad-request :ok))]
+        status-key (if (:errors result) :bad-request :ok)
+        status (status-code status-key)]
     {:status status
      :body result}))

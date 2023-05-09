@@ -43,9 +43,8 @@
                 :where
                 [?e :user/id       ?id]
                 [?e :user/name   ?name]
-                [?e :user/email ?email]]
-        result (first (d/q {:query query :args [db email]}))]
-    result))
+                [?e :user/email ?email]]]
+    (first (d/q {:query query :args [db email]}))))
 
 
 (defn user->find-by-id
@@ -57,9 +56,15 @@
                 :where
                 [?e :user/id       ?id]
                 [?e :user/name   ?name]
-                [?e :user/email ?email]]
-        result (first (d/q {:query query :args [db (uuid id)]}))]
-    result))
+                [?e :user/email ?email]]]
+    (first (d/q {:query query :args [db (uuid id)]}))))
+
+
+(defn user->find-by-id-or-email
+  [id email]
+  (if id
+    (user->find-by-id id)
+    (user->find-by-email email)))
 
 
 (defn user->find-all
