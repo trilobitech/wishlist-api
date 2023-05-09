@@ -28,5 +28,6 @@
                                                           :username :env
                                                           :password :env}]]
                    :dependencies [[com.datomic/dev-local "1.0.243"]]
-                   :env {:debug-mode "true"}}
-             :test {:dependencies [[nubank/matcher-combinators "3.8.5"]]}})
+                   :env {:env-mode "dev"}}
+             :test {:dependencies [[nubank/matcher-combinators "3.8.5"]]
+                    :env {:env-mode "test"}}})

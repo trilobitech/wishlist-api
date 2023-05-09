@@ -2,7 +2,7 @@
   (:require
     [clojure.test :refer [deftest is testing]]
     [matcher-combinators.test :refer [thrown-match?]]
-    [wishlist-api.handlers.auth.auth-code :refer [auth-code]]))
+    [wishlist-api.handlers.auth.code :refer [auth-code]]))
 
 
 (deftest auth-code-test
